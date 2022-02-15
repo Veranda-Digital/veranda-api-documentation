@@ -1,0 +1,722 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://getveranda.com'
+info:
+  description: |
+    This is an OpenAPI representation of the Veranda Digital app API.
+    You can find the app at (https://app.getveranda.com). None of these
+    endpoints can currently be activated through this page, for access
+    to the API itself, please contact the
+
+    # Who we are
+    Veranda Digital Inc. is the creator of the Veranda App and food delivery
+    box service(?). The aim is to connect the last mile of food distribution, by
+    creating a food-safe and sustainable store-to-client focused solution. By
+    having both clients and delivery service workers able to have access to the
+    Veranda boxes. Additionally, users can track their delivery progress through
+    the tags(?) included in each delivery, which also allows the ability to view
+    temperatures of the food being delivered.
+  version: "0.0.1"
+  title: Veranda Digital App
+  termsOfService: 'http://app.getveranda.com/'
+  contact:
+    name: Patrick Houlding
+    email: patrick.houlding@getveranda.com
+  x-logo:
+    url: '/docs/img/illu_logo.png'
+    altText: Veranda Digital Inc. logo
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+tags:
+  - name: Admin Lock
+    description: Lock endpoints for Admin
+  - name: Admin Cognito
+    description: Cognito endpoints for Admin
+  - name: Client App_Users
+    description: App_Users endpoints for Clients
+    x-displayName: Users
+  - name: Client Lock_Roles
+    description: Client endpoints for Lock_Roles
+    x-displayName: Lock
+  - name: Client Lock_Telemetry
+    description: Client endpoints for Lock_Telemetry
+    x-displayName: Lock Telemetry
+  - name: Client Lock_Usage_Record
+    description: Client endpoints for Usage
+    x-displayName: Lock Usage Records
+  - name: Dev Lock_Roles
+    description: Dev endpoints for Lock_Roles
+    x-displayName: Lock Roles
+  - name: Dev Lock_Usage_Record
+    description: Dev endpoints for Lock_Usage_Record
+    x-displayName: Lock Usage Record
+  - name: Dev lock
+    description: Dev endpoints for Lock
+    x-displayName: Lock
+  - name: Dev tools
+    description: Dev endpoints for tools
+    x-displayName: Tools
+  - name: Dev users
+    description: Dev endpoints for Users
+    x-displayName: Users
+  - name: LoRa Lock_Telemetry
+x-tagGroups:
+  - name: Utilities
+    tags:
+      - Utilities
+  - name: Admin
+    tags:
+      - Admin Lock
+      - Admin Cognito
+  - name: Client
+    tags:
+      - Client App_Users
+      - Client Lock_Roles
+      - Client Lock_Telemetry
+      - Client Lock_Usage_Record
+  - name: Dev
+    tags:
+      - Dev Lock_Roles
+      - Dev Lock_Usage_Record
+      - Dev lock
+      - Dev tools
+      - Dev users
+  - name: LoRa
+    tags:
+      - LoRa Lock_Telemetry
+
+paths:
+  /:
+    get:
+      tags:
+        - Utilities
+      summary: Server Ping
+      description: Pings the server and returns "Pong!" on success
+      operationId: ping
+      responses:
+        '200':
+          description: Successful Operation
+  /test:
+    get:
+      tags:
+        - Utilities
+      summary: Test
+      description: Not entirely certain what this operation does
+      operationId: test
+      responses:
+        '200':
+          description: Successful Operation
+
+  /lock:
+    post:
+      tags:
+        - Admin Lock
+      summary: Create Lock
+      description: Adds a lock to the database with admin privileges
+      operationId: lock.createLock
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Error
+        '406':
+          description: Invalid input
+      security:
+        - veranda_auth:
+          - 'tbd'
+      x-codeSamples:
+        - lang: 'PHP'
+          source: |
+            to be filled in
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                id,
+                platform_id,
+                platform
+              ],
+              properties: {
+                id: {
+                  type: number,
+                  format: int64
+                  },
+                  platform_id: {
+                    type: string,
+                    format: uuid
+                  },
+                  platform: {
+                    type: string
+                  }
+                }
+              }
+    get:
+      tags:
+        - Dev lock
+      summary: GET all locks
+      operationId: /dev/lock.getAllLocks
+      responses:
+        '404':
+          description: Not found
+  /lock/{id}:
+    delete:
+      tags:
+        - Admin Lock
+      summary: Delete Lock
+      description: ''
+      operationId: lock.deleteLock
+      parameters:
+        - name: lockID
+          in: path
+          description: Lock ID to delete
+          required: true
+          schema:
+            type: string
+      responses:
+          '400':
+            description: Invalid lock ID, must include a device EUI
+          '500':
+            description: Lock ID not found, could not delete
+          '200':
+            description: Successful operation
+    get:
+      tags:
+        - Admin Lock
+      summary: Get Lock
+      description: Returns a given lock from ID
+      operationId: lock.getLock
+      parameters:
+        - name: lockID
+          in: path
+          required: true
+          schema:
+            type: string
+      response:
+        '400':
+          description: Invalid lock ID, must include a device EUI
+        '500':
+          description: Could not identify lock
+        '200':
+          description: Successful operation
+  /signup:
+    post:
+      tags:
+        - Admin Cognito
+      summary: AWS Cognito Signup
+      description: Sends POST request to AWS Cognito with user information
+      operationId: cognito.cognitoSignUp
+      responses:
+        default:
+          description: Successful operation
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                Username,
+                Password,
+                ClientID,
+                name,
+                family_name
+              ],
+              properties: {
+                Username: {
+                  type: string,
+                  format: email
+                  },
+                  Password: {
+                    type: string
+                  },
+                  ClientID: {
+                    type: string
+                  },
+                  name: {
+                    type: string
+                  },
+                  family_name: {
+                    type: string
+                  }
+                }
+              }
+  /lorauplink:
+    post:
+      tags:
+        - LoRa Lock_Telemetry
+      summary:
+        - Create uplink data
+      operationId: /lora/lock_telemetry.lorauplink
+      responses:
+        '500':
+          description: Could not identify lock
+        '200':
+          description: Successful operation
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                Device EUI,
+                lock_id,
+                logged_time,
+                frequency,
+                payload,
+                gateway,
+                rssi,
+                snr,
+                message,
+                state,
+                battery,
+                temperature
+              ],
+              optional: [
+                gateway_name
+              ],
+              properties: {
+                Device EUI: {
+                  type: string
+                },
+                lock_id: {
+                  type: number
+                },
+                logged_time: {
+                  type: string
+                },
+                frequency: {
+                  type: number
+                },
+                payload: {
+                  type: string
+                },
+                rssi: {
+                  type: number
+                },
+                snr: {
+                  type: number
+                },
+                message: {
+                  type: string
+                },
+                state: {
+                  type: string
+                },
+                battery: {
+                  type: number
+                },
+                temperature: {
+                  type: number
+                },
+                gateway_name: {
+                  type: string
+                }
+              }
+            }
+  /me:
+    get:
+      tags:
+        - Client App_Users
+      summary: GET user profile data from JWT
+      description: Takes a JWT and returns a user's profile
+      operationId: /client/app_users.getProfileFromToken
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Not found
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                "JSON web token"
+              ],
+              properties: {
+                JSON web token: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /mylocks:
+    get:
+      tags:
+        - Client Lock_Roles
+      summary: GET all locks for given user
+      description: Returns all locks associated with user
+      operationId: /client/lock_roles.getLocksFromToken
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Locks not found
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                JSON web token
+              ],
+              properties: {
+                JSON web token: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /locksharing/{id}:
+    get:
+      tags:
+        - Client Lock_Roles
+      summary: GET all shared users
+      description: Returns list of users that a sharing a given lock
+      operationId: /client/lock_roles.getLockShares
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: No locks found
+      parameters:
+        - name: lockID
+          in: path
+          description: Lock ID to fetch sharing users
+          required: true
+          schema:
+            type: string
+  /sharedlocks:
+    get:
+      tags:
+        - Client Lock_Roles
+      summary: GET shared locks from given JWT
+      description: Gets all shared locks for given user
+      operationId: /client/lock_roles.getSharedLocksFromToken
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: No locks found
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                JSON web token
+              ],
+              properties: {
+                JSON web token: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /mylocks/{id}:
+    get:
+      tags:
+        - Client Lock_Roles
+      summary: GET a given user's registered locks
+      description: Gets all registered locks for given user
+      operationId: /client/lock_roles.getLock
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: No locks found, either no lock id number or lacking permissions
+      parameters:
+        - name: lockID
+          in: path
+          description: Lock ID to fetch registered locks
+          required: true
+          schema:
+            type: string
+  /register/{reg_id}:
+    post:
+      tags:
+        - Client Lock_Roles
+      summary: POST lock to User
+      description: Registers lock to given user
+      operationId: /client/lock_roles.registerLock
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Not found
+      parameters:
+        - name: reg_id
+          in: path
+          description: registration ID to register lock
+          required: true
+          schema:
+            type: string
+
+  /unregister/{id}:
+    delete:
+      tags:
+        - Client Lock_Roles
+      summary: DELETE lock from User
+      description: Deletes (unregisters) lock from given user
+      operationId: /client/lock_roles.unregisterLock
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Could not delete lock
+      parameters:
+        - name: id
+          in: path
+          description: ID of lock to delete
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                JSON web token
+              ],
+              properties: {
+                JSON web token: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /locktelemetry/{id}:
+    get:
+      tags:
+        - Client Lock_Telemetry
+      summary: GET lock telemetry for user
+      description: Fetches lock telemetry data for a specific lock
+      operationId: /client/lock_telemetry.getLockTelemetry
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Error fetching telemetry data
+      parameters:
+        - name: id
+          in: path
+          description: ID of lock to fetch telemetry data
+          required: true
+          schema:
+            type: string
+  /locklogs/{id}:
+    get:
+      tags:
+        - Client Lock_Usage_Record
+      summary: GET logs of given lock
+      description: Fetches logs of a given lock
+      operationId: /client/lock_usage_record.getLockLogs
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Error fetching logs of lock
+      parameters:
+        - name: id
+          in: path
+          description: ID of lock to fetch logs of
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                JSON web token
+              ],
+              properties: {
+                JSON web token: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /unlock/{id}:
+    post:
+      tags:
+        - Client Lock_Usage_Record
+      summary: POST unlock message to be queued in AWS and LoRaWAN
+      description: Sends unlock message to lock through either AWS or LoRaWAN
+      operationId: /client/lock_usage_record.unlockLock
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Error unlocking lock
+      parameters:
+        - name: id
+          in: path
+          description: ID of lock to send unlock message
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                JSON web token
+              ],
+              properties: {
+                JSON web token: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /mirror:
+    any:
+      tags:
+        - Dev tools
+      summary: Mirror
+      description: Mirrors the called event body back as return object
+      operationId: /dev/tools.mirror
+      responses:
+        '200':
+          description: Successful operation, Thanks Josh :)
+
+  /lockReg/{device_eui}:
+    post:
+      tags:
+        - Dev lock
+      summary: POST lock with eui
+      description: DEV Tool -> registers lock
+      operationId: /dev/lock.addLockReg
+      responses:
+        '200':
+          description: Successful operation
+        '500':
+          description: Not found
+      parameters:
+        - name: device_eui
+          in: path
+          description: EUI of device to register
+          required: true
+          schema:
+            type: string
+  /user:
+    post:
+      tags:
+        - Dev users
+      summary: CREATE user
+      operationId: /dev/users.createAppUser
+      responses:
+        '404':
+          description: Not found
+  /user/{id}:
+    get:
+      tags:
+        - Dev users
+      summary: GET user by ID
+      operationId: /dev/users.getAppUserbyID
+      responses:
+        '404':
+          description: Not found
+    put:
+      tags:
+        - Dev users
+      summary: UPDATE user
+      operationId: /dev/users.updateAppUser
+      responses:
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - Dev users
+      summary: DELETE user
+      operationId: /dev/users.deleteAppUser
+      responses:
+        '404':
+          description: Not found
+  /lockrecord/{id}:
+    get:
+      tags:
+        - Dev Lock_Usage_Record
+      summary: GET lock_usage_record
+      operationId: /dev/lock_usage_record.getLockUsageRecord
+      responses:
+        '404':
+          description: Not found
+  /lockrole/{id}:
+    get:
+      tags:
+        - Dev Lock_Roles
+      summary: GET Lock_Roles from ID
+      operationId: /dev/lock_roles.getLockRole
+      responses:
+        '404':
+          description: Not found
+  /lockrole:
+    post:
+      tags:
+        - Dev Lock_Roles
+      summary: POST Lock_Role
+      operationId: /dev/lock_roles.createLockRole
+      responses:
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - Dev Lock_Roles
+      summary: DELETE Lock_Role
+      operationId: /dev/lock_roles.deleteLockRole
+      responses:
+        '404':
+          description: Not found
+x-webhooks:
+    AWS Cognito Post Confirmation:
+      post:
+        tags:
+          - Admin Cognito
+        summary: Post Confirmation
+        description: Duplicates successful user signup into PostGres database after AWS Cognito Signup
+        operationId: cognito.postConfirmation
+        responses:
+          default:
+            description: Successful operation
+          '500':
+            description: Failure
+        requestBody:
+          content:
+            application/json:
+              schema: {
+                type": object,
+                required: [
+                  id,
+                  email,
+                  first_name,
+                  last_name,
+                  role
+                ],
+                properties: {
+                  id: {
+                    type: string
+                    },
+                    email: {
+                      type: string,
+                      format: email
+                    },
+                    first_name: {
+                      type: string
+                    },
+                    last_name: {
+                      type: string
+                    },
+                    role: {
+                      type: string,
+                      value: user
+                    }
+                  }
+                }
