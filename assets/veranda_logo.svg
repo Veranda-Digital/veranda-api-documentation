@@ -1,0 +1,23 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 418.58 132.61">
+    <defs>
+        <style>
+            .cls-1 {
+                font-size: 122px;
+                fill:
+                    /* #4a5a4f */
+                    #009245;
+                font-family: 'Lato'
+            }
+
+            .cls-2 {
+                letter-spacing: -0.03em;
+            }
+
+            .cls-3 {
+                letter-spacing: 0em;
+            }
+        </style>
+    </defs><text class="cls-1" transform="translate(0 102.11)">
+        <tspan class="cls-2">Veranda</tspan>
+    </text>
+</svg>
