@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: 'http://getveranda.com'
+  - url: "http://getveranda.com"
 info:
   description: |
     This is an OpenAPI representation of the Veranda Digital app API.
@@ -18,16 +18,16 @@ info:
     temperatures of the food being delivered.
   version: "0.0.1"
   title: Veranda Digital App
-  termsOfService: 'http://app.getveranda.com/'
+  termsOfService: "http://app.getveranda.com/"
   contact:
     name: Patrick Houlding
     email: patrick.houlding@getveranda.com
   x-logo:
-    url: '/docs/img/illu_logo.png'
+    url: "https://raw.githubusercontent.com/Veranda-Digital/veranda-api-documentation/master/assets/veranda_logo.svg"
     altText: Veranda Digital Inc. logo
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
 tags:
   - name: Admin Lock
@@ -96,7 +96,7 @@ paths:
       description: Pings the server and returns "Pong!" on success
       operationId: ping
       responses:
-        '200':
+        "200":
           description: Successful Operation
   /test:
     get:
@@ -106,7 +106,7 @@ paths:
       description: Not entirely certain what this operation does
       operationId: test
       responses:
-        '200':
+        "200":
           description: Successful Operation
 
   /lock:
@@ -117,42 +117,32 @@ paths:
       description: Adds a lock to the database with admin privileges
       operationId: lock.createLock
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error
-        '406':
+        "406":
           description: Invalid input
       security:
         - veranda_auth:
-          - 'tbd'
+            - "tbd"
       x-codeSamples:
-        - lang: 'PHP'
+        - lang: "PHP"
           source: |
             to be filled in
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                id,
-                platform_id,
-                platform
-              ],
-              properties: {
-                id: {
-                  type: number,
-                  format: int64
+            schema:
+              {
+                type: object,
+                required: [id, platform_id, platform],
+                properties:
+                  {
+                    id: { type: number, format: int64 },
+                    platform_id: { type: string, format: uuid },
+                    platform: { type: string },
                   },
-                  platform_id: {
-                    type: string,
-                    format: uuid
-                  },
-                  platform: {
-                    type: string
-                  }
-                }
               }
     get:
       tags:
@@ -160,14 +150,14 @@ paths:
       summary: GET all locks
       operationId: /dev/lock.getAllLocks
       responses:
-        '404':
+        "404":
           description: Not found
   /lock/{id}:
     delete:
       tags:
         - Admin Lock
       summary: Delete Lock
-      description: ''
+      description: ""
       operationId: lock.deleteLock
       parameters:
         - name: lockID
@@ -177,12 +167,12 @@ paths:
           schema:
             type: string
       responses:
-          '400':
-            description: Invalid lock ID, must include a device EUI
-          '500':
-            description: Lock ID not found, could not delete
-          '200':
-            description: Successful operation
+        "400":
+          description: Invalid lock ID, must include a device EUI
+        "500":
+          description: Lock ID not found, could not delete
+        "200":
+          description: Successful operation
     get:
       tags:
         - Admin Lock
@@ -196,11 +186,11 @@ paths:
           schema:
             type: string
       response:
-        '400':
+        "400":
           description: Invalid lock ID, must include a device EUI
-        '500':
+        "500":
           description: Could not identify lock
-        '200':
+        "200":
           description: Successful operation
   /signup:
     post:
@@ -215,33 +205,18 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                Username,
-                Password,
-                ClientID,
-                name,
-                family_name
-              ],
-              properties: {
-                Username: {
-                  type: string,
-                  format: email
+            schema:
+              {
+                type: object,
+                required: [Username, Password, ClientID, name, family_name],
+                properties:
+                  {
+                    Username: { type: string, format: email },
+                    Password: { type: string },
+                    ClientID: { type: string },
+                    name: { type: string },
+                    family_name: { type: string },
                   },
-                  Password: {
-                    type: string
-                  },
-                  ClientID: {
-                    type: string
-                  },
-                  name: {
-                    type: string
-                  },
-                  family_name: {
-                    type: string
-                  }
-                }
               }
   /lorauplink:
     post:
@@ -251,71 +226,48 @@ paths:
         - Create uplink data
       operationId: /lora/lock_telemetry.lorauplink
       responses:
-        '500':
+        "500":
           description: Could not identify lock
-        '200':
+        "200":
           description: Successful operation
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                Device EUI,
-                lock_id,
-                logged_time,
-                frequency,
-                payload,
-                gateway,
-                rssi,
-                snr,
-                message,
-                state,
-                battery,
-                temperature
-              ],
-              optional: [
-                gateway_name
-              ],
-              properties: {
-                Device EUI: {
-                  type: string
-                },
-                lock_id: {
-                  type: number
-                },
-                logged_time: {
-                  type: string
-                },
-                frequency: {
-                  type: number
-                },
-                payload: {
-                  type: string
-                },
-                rssi: {
-                  type: number
-                },
-                snr: {
-                  type: number
-                },
-                message: {
-                  type: string
-                },
-                state: {
-                  type: string
-                },
-                battery: {
-                  type: number
-                },
-                temperature: {
-                  type: number
-                },
-                gateway_name: {
-                  type: string
-                }
+            schema:
+              {
+                type: object,
+                required:
+                  [
+                    Device EUI,
+                    lock_id,
+                    logged_time,
+                    frequency,
+                    payload,
+                    gateway,
+                    rssi,
+                    snr,
+                    message,
+                    state,
+                    battery,
+                    temperature,
+                  ],
+                optional: [gateway_name],
+                properties:
+                  {
+                    Device EUI: { type: string },
+                    lock_id: { type: number },
+                    logged_time: { type: string },
+                    frequency: { type: number },
+                    payload: { type: string },
+                    rssi: { type: number },
+                    snr: { type: number },
+                    message: { type: string },
+                    state: { type: string },
+                    battery: { type: number },
+                    temperature: { type: number },
+                    gateway_name: { type: string },
+                  },
               }
-            }
   /me:
     get:
       tags:
@@ -324,25 +276,19 @@ paths:
       description: Takes a JWT and returns a user's profile
       operationId: /client/app_users.getProfileFromToken
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Not found
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                "JSON web token"
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: ["JSON web token"],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /mylocks:
     get:
       tags:
@@ -351,25 +297,19 @@ paths:
       description: Returns all locks associated with user
       operationId: /client/lock_roles.getLocksFromToken
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Locks not found
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /locksharing/{id}:
     get:
       tags:
@@ -378,9 +318,9 @@ paths:
       description: Returns list of users that a sharing a given lock
       operationId: /client/lock_roles.getLockShares
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: No locks found
       parameters:
         - name: lockID
@@ -397,25 +337,19 @@ paths:
       description: Gets all shared locks for given user
       operationId: /client/lock_roles.getSharedLocksFromToken
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: No locks found
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /mylocks/{id}:
     get:
       tags:
@@ -424,9 +358,9 @@ paths:
       description: Gets all registered locks for given user
       operationId: /client/lock_roles.getLock
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: No locks found, either no lock id number or lacking permissions
       parameters:
         - name: lockID
@@ -443,9 +377,9 @@ paths:
       description: Registers lock to given user
       operationId: /client/lock_roles.registerLock
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Not found
       parameters:
         - name: reg_id
@@ -463,9 +397,9 @@ paths:
       description: Deletes (unregisters) lock from given user
       operationId: /client/lock_roles.unregisterLock
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Could not delete lock
       parameters:
         - name: id
@@ -477,18 +411,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /locktelemetry/{id}:
     get:
       tags:
@@ -497,9 +425,9 @@ paths:
       description: Fetches lock telemetry data for a specific lock
       operationId: /client/lock_telemetry.getLockTelemetry
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error fetching telemetry data
       parameters:
         - name: id
@@ -516,9 +444,9 @@ paths:
       description: Fetches logs of a given lock
       operationId: /client/lock_usage_record.getLockLogs
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error fetching logs of lock
       parameters:
         - name: id
@@ -530,18 +458,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /unlock/{id}:
     post:
       tags:
@@ -550,9 +472,9 @@ paths:
       description: Sends unlock message to lock through either AWS or LoRaWAN
       operationId: /client/lock_usage_record.unlockLock
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error unlocking lock
       parameters:
         - name: id
@@ -564,18 +486,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /mirror:
     any:
       tags:
@@ -584,7 +500,7 @@ paths:
       description: Mirrors the called event body back as return object
       operationId: /dev/tools.mirror
       responses:
-        '200':
+        "200":
           description: Successful operation, Thanks Josh :)
 
   /lockReg/{device_eui}:
@@ -595,9 +511,9 @@ paths:
       description: DEV Tool -> registers lock
       operationId: /dev/lock.addLockReg
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Not found
       parameters:
         - name: device_eui
@@ -613,7 +529,7 @@ paths:
       summary: CREATE user
       operationId: /dev/users.createAppUser
       responses:
-        '404':
+        "404":
           description: Not found
   /user/{id}:
     get:
@@ -622,7 +538,7 @@ paths:
       summary: GET user by ID
       operationId: /dev/users.getAppUserbyID
       responses:
-        '404':
+        "404":
           description: Not found
     put:
       tags:
@@ -630,7 +546,7 @@ paths:
       summary: UPDATE user
       operationId: /dev/users.updateAppUser
       responses:
-        '404':
+        "404":
           description: Not found
     delete:
       tags:
@@ -638,7 +554,7 @@ paths:
       summary: DELETE user
       operationId: /dev/users.deleteAppUser
       responses:
-        '404':
+        "404":
           description: Not found
   /lockrecord/{id}:
     get:
@@ -647,7 +563,7 @@ paths:
       summary: GET lock_usage_record
       operationId: /dev/lock_usage_record.getLockUsageRecord
       responses:
-        '404':
+        "404":
           description: Not found
   /lockrole/{id}:
     get:
@@ -656,7 +572,7 @@ paths:
       summary: GET Lock_Roles from ID
       operationId: /dev/lock_roles.getLockRole
       responses:
-        '404':
+        "404":
           description: Not found
   /lockrole:
     post:
@@ -665,7 +581,7 @@ paths:
       summary: POST Lock_Role
       operationId: /dev/lock_roles.createLockRole
       responses:
-        '404':
+        "404":
           description: Not found
     delete:
       tags:
@@ -673,50 +589,34 @@ paths:
       summary: DELETE Lock_Role
       operationId: /dev/lock_roles.deleteLockRole
       responses:
-        '404':
+        "404":
           description: Not found
 x-webhooks:
-    AWS Cognito Post Confirmation:
-      post:
-        tags:
-          - Admin Cognito
-        summary: Post Confirmation
-        description: Duplicates successful user signup into PostGres database after AWS Cognito Signup
-        operationId: cognito.postConfirmation
-        responses:
-          default:
-            description: Successful operation
-          '500':
-            description: Failure
-        requestBody:
-          content:
-            application/json:
-              schema: {
+  AWS Cognito Post Confirmation:
+    post:
+      tags:
+        - Admin Cognito
+      summary: Post Confirmation
+      description: Duplicates successful user signup into PostGres database after AWS Cognito Signup
+      operationId: cognito.postConfirmation
+      responses:
+        default:
+          description: Successful operation
+        "500":
+          description: Failure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              {
                 type": object,
-                required: [
-                  id,
-                  email,
-                  first_name,
-                  last_name,
-                  role
-                ],
-                properties: {
-                  id: {
-                    type: string
-                    },
-                    email: {
-                      type: string,
-                      format: email
-                    },
-                    first_name: {
-                      type: string
-                    },
-                    last_name: {
-                      type: string
-                    },
-                    role: {
-                      type: string,
-                      value: user
-                    }
-                  }
-                }
+                required: [id, email, first_name, last_name, role],
+                properties:
+                  {
+                    id: { type: string },
+                    email: { type: string, format: email },
+                    first_name: { type: string },
+                    last_name: { type: string },
+                    role: { type: string, value: user },
+                  },
+              }
