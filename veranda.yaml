@@ -76,13 +76,6 @@ x-tagGroups:
       - Client Lock_Roles
       - Client Lock_Telemetry
       - Client Lock_Usage_Record
-  - name: Dev
-    tags:
-      - Dev Lock_Roles
-      - Dev Lock_Usage_Record
-      - Dev lock
-      - Dev tools
-      - Dev users
   - name: LoRa
     tags:
       - LoRa Lock_Telemetry
@@ -144,20 +137,12 @@ paths:
                     platform: { type: string },
                   },
               }
-    get:
-      tags:
-        - Dev lock
-      summary: GET all locks
-      operationId: /dev/lock.getAllLocks
-      responses:
-        "404":
-          description: Not found
   /lock/{id}:
     delete:
       tags:
         - Admin Lock
       summary: Delete Lock
-      description: ""
+      description: "Deletes a lock from the system"
       operationId: lock.deleteLock
       parameters:
         - name: lockID
@@ -192,6 +177,9 @@ paths:
           description: Could not identify lock
         "200":
           description: Successful operation
+
+# TODO ADD: requestLockVersion
+
   /signup:
     post:
       tags:
@@ -268,6 +256,7 @@ paths:
                     gateway_name: { type: string },
                   },
               }
+# TODO: change path & name if necessary
   /me:
     get:
       tags:
@@ -289,6 +278,7 @@ paths:
                 required: ["JSON web token"],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
+# TODO: change path & name if necessary
   /mylocks:
     get:
       tags:
@@ -301,6 +291,13 @@ paths:
           description: Successful operation
         "500":
           description: Locks not found
+      parameters:
+        -in: query
+          name: limit
+          schema:
+            type: integer
+          name: page
+          schema: integer
       requestBody:
         content:
           application/json:
@@ -492,105 +489,7 @@ paths:
                 required: [JSON web token],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
-  /mirror:
-    any:
-      tags:
-        - Dev tools
-      summary: Mirror
-      description: Mirrors the called event body back as return object
-      operationId: /dev/tools.mirror
-      responses:
-        "200":
-          description: Successful operation, Thanks Josh :)
 
-  /lockReg/{device_eui}:
-    post:
-      tags:
-        - Dev lock
-      summary: POST lock with eui
-      description: DEV Tool -> registers lock
-      operationId: /dev/lock.addLockReg
-      responses:
-        "200":
-          description: Successful operation
-        "500":
-          description: Not found
-      parameters:
-        - name: device_eui
-          in: path
-          description: EUI of device to register
-          required: true
-          schema:
-            type: string
-  /user:
-    post:
-      tags:
-        - Dev users
-      summary: CREATE user
-      operationId: /dev/users.createAppUser
-      responses:
-        "404":
-          description: Not found
-  /user/{id}:
-    get:
-      tags:
-        - Dev users
-      summary: GET user by ID
-      operationId: /dev/users.getAppUserbyID
-      responses:
-        "404":
-          description: Not found
-    put:
-      tags:
-        - Dev users
-      summary: UPDATE user
-      operationId: /dev/users.updateAppUser
-      responses:
-        "404":
-          description: Not found
-    delete:
-      tags:
-        - Dev users
-      summary: DELETE user
-      operationId: /dev/users.deleteAppUser
-      responses:
-        "404":
-          description: Not found
-  /lockrecord/{id}:
-    get:
-      tags:
-        - Dev Lock_Usage_Record
-      summary: GET lock_usage_record
-      operationId: /dev/lock_usage_record.getLockUsageRecord
-      responses:
-        "404":
-          description: Not found
-  /lockrole/{id}:
-    get:
-      tags:
-        - Dev Lock_Roles
-      summary: GET Lock_Roles from ID
-      operationId: /dev/lock_roles.getLockRole
-      responses:
-        "404":
-          description: Not found
-  /lockrole:
-    post:
-      tags:
-        - Dev Lock_Roles
-      summary: POST Lock_Role
-      operationId: /dev/lock_roles.createLockRole
-      responses:
-        "404":
-          description: Not found
-    delete:
-      tags:
-        - Dev Lock_Roles
-      summary: DELETE Lock_Role
-      operationId: /dev/lock_roles.deleteLockRole
-      responses:
-        "404":
-          description: Not found
 x-webhooks:
   AWS Cognito Post Confirmation:
     post:
