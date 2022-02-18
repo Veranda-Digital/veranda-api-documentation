@@ -291,11 +291,6 @@ paths:
           description: Successful operation
         "500":
           description: Locks not found
-      parameters:
-        -in: query
-          name: limit
-          schema:
-            type: integer
       requestBody:
         content:
           application/json:
