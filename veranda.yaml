@@ -291,6 +291,12 @@ paths:
           description: Successful operation
         "500":
           description: Locks not found
+      parameters:
+        - in: query
+          name: limit
+          type: integer
+          description: limits the results returned to N objects
+          required: false
       requestBody:
         content:
           application/json:
