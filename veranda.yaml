@@ -521,8 +521,9 @@ parameterSets:
       type: integer
       description: limits the results returned to N objects
       required: false
-    - in: query
-      name: page
-      type: integer
-      description: denotes the page of results to be viewed
-      required: false
+
+#    - in: query
+#      name: page
+#      type: integer
+#      description: denotes the page of results to be viewed
+#      required: false
