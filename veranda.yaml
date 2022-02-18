@@ -315,7 +315,7 @@ paths:
                 required: [JSON web token],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
-  /locksharing/{id}:
+  /lock-sharing/{id}:
     get:
       tags:
         - Client Lock_Roles
@@ -334,6 +334,81 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/parameters/limitParam'
+        - $ref: '#/parameters/pageParam'
+    post:
+      tags:
+        - Client Lock_Roles
+      summary: Add a shared client to lock
+      description: Shares a lock with a given user
+      operationId: /client/lock_roles/addSharedUser
+      responses:
+        "400":
+          description: Error with provided information (lock ID, email, adding yourself)
+        "403":
+          description: Insufficient permissions to add user to lock (i.e. you do not own the lock)
+        "404":
+          description: No user exists with email provided
+        "500":
+          description: Error completing process
+        "201":
+          description: Successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              {
+                type: object,
+                required: [User email],
+                properties: { User email: { type: string, format: email } },
+              }
+    delete:
+      tags:
+        - Client Lock_Roles
+      summary: Deletes shared user from lock
+      description: Unshares a lock with a given user
+      operationId: /client/lock_roles/removeSharedUser
+      responses:
+        "400":
+          description: Error with provided information (lock ID, email)
+        "403":
+          description: Insufficient permissions to remove user from lock (i.e. you do not own the lock)
+        "500":
+          description: Error completing process
+        "200":
+          description: Successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              {
+                type: object,
+                required: [User email],
+                properties: { User email: { type: string, format: email } },
+              }
+  /lock-sharing/{id}/me:
+    delete:
+      tags:
+        - Client Lock_Roles
+      summary: Remove self from shared lock
+      description: Removes the user invoking action from a lock they are a shared user on
+      operationId: /client/lock_roles/removeSharedLock
+      parameters:
+        - name: lockID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "400":
+          description: Invalid lock ID
+        "404":
+          description: No lock found with given ID
+        "200":
+          description: Successful operation
+        "500":
+          description: Error completing process
+
   /sharedlocks:
     get:
       tags:
@@ -346,6 +421,9 @@ paths:
           description: Successful operation
         "500":
           description: No locks found
+      parameters:
+        - $ref: '#/parameters/limitParam'
+        - $ref: '#/parameters/pageParam'
       requestBody:
         content:
           application/json:
@@ -359,8 +437,8 @@ paths:
     get:
       tags:
         - Client Lock_Roles
-      summary: GET a given user's registered locks
-      description: Gets all registered locks for given user
+      summary: GET a given user's registered lock
+      description: Gets a specific registered lock for a user
       operationId: /client/lock_roles.getLock
       responses:
         "200":
@@ -374,6 +452,35 @@ paths:
           required: true
           schema:
             type: string
+    put:
+      tags:
+        - Client Lock_Roles
+      summary: Change name of lock
+      description: Changes the name of the lock for the single user only
+      operationId: /client/lock_roles.changeLockName
+      resposnes:
+        "400":
+          description: Invalid lock ID
+        "201":
+          description: Successful operation
+        "500":
+          description: Error completing request
+      parameters:
+        - name: lockID
+          in: path
+          description: Lock ID to fetch sharing users
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              {
+                type: object,
+                required: [name],
+                properties: { name: { type: string } }
+              }
   /register/{reg_id}:
     post:
       tags:
@@ -393,6 +500,15 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              {
+                type: object,
+                required: [Lock Name],
+                properties: { Lock Name: { type: string } },
+              }
 
   /unregister/{id}:
     delete:
@@ -441,6 +557,8 @@ paths:
           required: true
           schema:
             type: string
+        - $ref: '#/parameters/limitParam'
+        - $ref: '#/parameters/pageParam'
   /locklogs/{id}:
     get:
       tags:
@@ -460,15 +578,8 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              {
-                type: object,
-                required: [JSON web token],
-                properties: { JSON web token: { type: string, format: uuid } },
-              }
+        - $ref: '#/parameters/limitParam'
+        - $ref: '#/parameters/pageParam'
   /unlock/{id}:
     post:
       tags:
@@ -488,15 +599,6 @@ paths:
           required: true
           schema:
             type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              {
-                type: object,
-                required: [JSON web token],
-                properties: { JSON web token: { type: string, format: uuid } },
-              }
 
 x-webhooks:
   AWS Cognito Post Confirmation:
