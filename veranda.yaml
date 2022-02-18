@@ -84,9 +84,9 @@ components:
   parameters:
     limitParam:
       in: query
-      name: limit
-      type: integer
-      description: limits the results returned to N objects
+        name: limit
+        type: integer
+        description: limits the results returned to N objects
 
 paths:
   /:
