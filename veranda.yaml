@@ -87,11 +87,6 @@ components:
       name: limit
       type: integer
       description: limits the results returned to N objects
-    paginationParam:
-      in: query
-      name: page
-      type: integer
-      description: the page of results to be viewed
 
 paths:
   /:
