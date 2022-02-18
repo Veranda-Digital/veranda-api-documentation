@@ -517,8 +517,8 @@ x-webhooks:
 components:
   parameters:
     pagination_and_limit:
-      in: query
-      name: limit
-      type: integer
-      description: limits the results returned to N objects
-      required: true
+      - in: query
+        name: limit
+        type: integer
+        description: limits the results returned to N objects
+        required: true
