@@ -296,7 +296,6 @@ paths:
           name: limit
           type: integer
           description: limits the results returned to N objects
-          required: true
       requestBody:
         content:
           application/json:
