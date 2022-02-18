@@ -292,11 +292,7 @@ paths:
         "500":
           description: Locks not found
       parameters:
-        - in: query
-          name: limit
-          type: integer
-          description: limits the results returned to N objects
-          required: false
+        - $ref: '#/parameterSets/pagination_and_limit'
       requestBody:
         content:
           application/json:
@@ -518,3 +514,15 @@ x-webhooks:
                     role: { type: string, value: user },
                   },
               }
+parameterSets:
+  pagination_and_limit:
+    - in: query
+      name: limit
+      type: integer
+      description: limits the results returned to N objects
+      required: false
+    - in: query
+      name: page
+      type: integer
+      description: denotes the page of results to be viewed
+      required: false
