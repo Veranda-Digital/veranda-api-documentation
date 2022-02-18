@@ -82,16 +82,16 @@ x-tagGroups:
 
 components:
   parameters:
-    limit:
-      - in: query
-        name: limit
-        type: integer
-        description: limits the results returned to N objects
-    pagination:
-      - in: query
-        name: page
-        type: integer
-        description: the page of results to be viewed
+    limitParam:
+      in: query
+      name: limit
+      type: integer
+      description: limits the results returned to N objects
+    paginationParam:
+      in: query
+      name: page
+      type: integer
+      description: the page of results to be viewed
 
 paths:
   /:
@@ -305,8 +305,8 @@ paths:
         "500":
           description: Locks not found
       parameters:
-        - ref: '#/components/parameters/limit'
-        - ref: '#/components/parameters/pagination'
+        - ref: '#/components/parameters/limitParam'
+        - ref: '#/components/parameters/paginationParam'
       requestBody:
         content:
           application/json:
