@@ -83,15 +83,15 @@ x-tagGroups:
 components:
   parameters:
     limit:
-      in: query
-      name: limit
-      type: integer
-      description: limits the results returned to N objects
+      - in: query
+        name: limit
+        type: integer
+        description: limits the results returned to N objects
     pagination:
-      in: query
-      name: page
-      type: integer
-      description: the page of results to be viewed
+      - in: query
+        name: page
+        type: integer
+        description: the page of results to be viewed
 
 paths:
   /:
