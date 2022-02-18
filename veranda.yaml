@@ -86,6 +86,11 @@ parameters:
     name: limit
     type: integer
     description: limits the results returned to N objects
+  pageParam:
+    in: query
+    name: page
+    type: integer
+    description: the page being viewed of the api response
 
 paths:
   /:
@@ -300,6 +305,7 @@ paths:
           description: Locks not found
       parameters:
         - $ref: '#/parameters/limitParam'
+        - $ref: '#/parameters/pageParam'
       requestBody:
         content:
           application/json:
