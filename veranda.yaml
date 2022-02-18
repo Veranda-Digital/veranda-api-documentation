@@ -80,6 +80,14 @@ x-tagGroups:
     tags:
       - LoRa Lock_Telemetry
 
+components:
+  parameters:
+    pagination_and_limit:
+      - in: query
+        name: limit
+        type: integer
+        description: limits the results returned to N objects
+
 paths:
   /:
     get:
@@ -514,10 +522,3 @@ x-webhooks:
                     role: { type: string, value: user },
                   },
               }
-components:
-  parameters:
-    pagination_and_limit:
-      - in: query
-        name: limit
-        type: integer
-        description: limits the results returned to N objects
