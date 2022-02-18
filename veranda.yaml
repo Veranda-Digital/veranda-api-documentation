@@ -80,13 +80,12 @@ x-tagGroups:
     tags:
       - LoRa Lock_Telemetry
 
-components:
-  parameters:
-    limitParam:
-      in: query
-        name: limit
-        type: integer
-        description: limits the results returned to N objects
+parameters:
+  limitParam:
+    in: query
+      name: limit
+      type: integer
+      description: limits the results returned to N objects
 
 paths:
   /:
@@ -300,7 +299,7 @@ paths:
         "500":
           description: Locks not found
       parameters:
-        - $ref: '#/components/parameters/limitParam'
+        - $ref: '#/parameters/limitParam'
       requestBody:
         content:
           application/json:
