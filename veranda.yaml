@@ -519,8 +519,6 @@ components:
     pagination_and_limit:
       in: query
       name: limit
-      schema:
-        type: integer
-        minimum: 0
+      type: integer
       description: limits the results returned to N objects
       required: false
