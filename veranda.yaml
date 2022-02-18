@@ -291,8 +291,6 @@ paths:
           description: Successful operation
         "500":
           description: Locks not found
-      parameters:
-        - $ref: '#/components/parameters/pagination_and_limit'
       requestBody:
         content:
           application/json:
@@ -524,9 +522,3 @@ components:
         minimum: 0
       description: limits the results returned to N objects
       required: false
-
-#    - in: query
-#      name: page
-#      type: integer
-#      description: denotes the page of results to be viewed
-#      required: false
