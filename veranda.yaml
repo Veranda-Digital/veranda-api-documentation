@@ -291,6 +291,8 @@ paths:
           description: Successful operation
         "500":
           description: Locks not found
+      parameters:
+        - $ref: '#/components/parameters/pagination_and_limit'
       requestBody:
         content:
           application/json:
