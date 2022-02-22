@@ -208,7 +208,7 @@ paths:
           required: true
           schema:
             type: string
-      response:
+      responses:
         "400":
           description: Invalid input
         "500":
