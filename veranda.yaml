@@ -34,6 +34,8 @@ tags:
     description: Lock endpoints for Admin
   - name: Admin Cognito
     description: Cognito endpoints for Admin
+  - name: Admin Versioning
+    description: Versioning endpoints for Admin
   - name: Client App_Users
     description: App_Users endpoints for Clients
     x-displayName: Users
@@ -70,6 +72,7 @@ x-tagGroups:
     tags:
       - Admin Lock
       - Admin Cognito
+      - Admin Versioning
   - name: Client
     tags:
       - Client App_Users
@@ -122,11 +125,11 @@ paths:
       description: Adds a lock to the database with admin privileges
       operationId: lock.createLock
       responses:
-        "200":
+        "201":
           description: Successful operation
         "500":
           description: Error
-        "406":
+        "400":
           description: Invalid input
       security:
         - veranda_auth:
@@ -185,12 +188,33 @@ paths:
       response:
         "400":
           description: Invalid lock ID, must include a device EUI
-        "500":
+        "404":
           description: Could not identify lock
+        "500":
+          description: Error completing process
         "200":
           description: Successful operation
 
-# TODO ADD: requestLockVersion
+  /lock-version/{id}:
+    get:
+      tags:
+        - Admin Versioning
+      summary: Get lock version
+      description: Returns the version of given lock
+      operationId: versioning.requestLockVersion
+      parameters:
+        - name: lockID
+          in: path
+          required: true
+          schema:
+            type: string
+      response:
+        "400":
+          description: Invalid input
+        "500":
+          description: Error completing process
+        "200":
+          description: Operation Successful
 
   /signup:
     post:
@@ -200,8 +224,10 @@ paths:
       description: Sends POST request to AWS Cognito with user information
       operationId: cognito.cognitoSignUp
       responses:
-        default:
+        "201":
           description: Successful operation
+        "400":
+          description: Invalid input
       requestBody:
         content:
           application/json:
@@ -228,7 +254,9 @@ paths:
       responses:
         "500":
           description: Could not identify lock
-        "200":
+        "404":
+          description: Lock not found
+        "201":
           description: Successful operation
       requestBody:
         content:
@@ -321,12 +349,14 @@ paths:
         - Client Lock_Roles
       summary: GET all shared users
       description: Returns list of users that a sharing a given lock
-      operationId: /client/lock_roles.getLockShares
+      operationId: /client/lock_roles.getUsersSharing
       responses:
         "200":
           description: Successful operation
         "500":
           description: No locks found
+        "400":
+          description: Invalid input (lockId)
       parameters:
         - name: lockID
           in: path
@@ -373,6 +403,8 @@ paths:
           description: Error with provided information (lock ID, email)
         "403":
           description: Insufficient permissions to remove user from lock (i.e. you do not own the lock)
+        "404":
+          description: Could not find user with matching username/email
         "500":
           description: Error completing process
         "200":
@@ -445,6 +477,10 @@ paths:
           description: Successful operation
         "500":
           description: No locks found, either no lock id number or lacking permissions
+        "400":
+          description: Invalid input
+        "403":
+          description: Insufficient permissions to view lock
       parameters:
         - name: lockID
           in: path
@@ -458,7 +494,7 @@ paths:
       summary: Change name of lock
       description: Changes the name of the lock for the single user only
       operationId: /client/lock_roles.changeLockName
-      resposnes:
+      responses:
         "400":
           description: Invalid lock ID
         "201":
@@ -489,10 +525,14 @@ paths:
       description: Registers lock to given user
       operationId: /client/lock_roles.registerLock
       responses:
-        "200":
+        "201":
           description: Successful operation
         "500":
           description: Not found
+        "400":
+          description: Invalid input
+        "403":
+          description: Lock button not pressed
       parameters:
         - name: reg_id
           in: path
@@ -522,6 +562,8 @@ paths:
           description: Successful operation
         "500":
           description: Could not delete lock
+        "403":
+          description: Invalid permissions (not an owned lock)
       parameters:
         - name: id
           in: path
@@ -550,6 +592,8 @@ paths:
           description: Successful operation
         "500":
           description: Error fetching telemetry data
+        "400":
+          description: Invalid input
       parameters:
         - name: id
           in: path
@@ -571,6 +615,8 @@ paths:
           description: Successful operation
         "500":
           description: Error fetching logs of lock
+        "400":
+          description: Invalid input
       parameters:
         - name: id
           in: path
@@ -588,10 +634,14 @@ paths:
       description: Sends unlock message to lock through either AWS or LoRaWAN
       operationId: /client/lock_usage_record.unlockLock
       responses:
-        "200":
+        "201":
           description: Successful operation
         "500":
           description: Error unlocking lock
+        "400":
+          description: Invalid input
+        "403":
+          description: Invalid permissions to view lock logs
       parameters:
         - name: id
           in: path
