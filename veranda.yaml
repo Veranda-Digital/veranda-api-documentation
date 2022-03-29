@@ -82,6 +82,9 @@ x-tagGroups:
   - name: LoRa
     tags:
       - LoRa Lock_Telemetry
+  - name: Integration
+    tags:
+      - Integration Amazon
 
 parameters:
   limitParam:
@@ -117,13 +120,13 @@ paths:
         "200":
           description: Successful Operation
 
-  /lock:
+  /v1/admin/lock:
     post:
       tags:
         - Admin Lock
       summary: Create Lock
       description: Adds a lock to the database with admin privileges
-      operationId: lock.createLock
+      operationId: lock.createLock_v1
       responses:
         "201":
           description: Successful operation
@@ -152,13 +155,13 @@ paths:
                     platform: { type: string },
                   },
               }
-  /lock/{id}:
+  /v1/admin/lock/{id}:
     delete:
       tags:
         - Admin Lock
       summary: Delete Lock
       description: "Deletes a lock from the system"
-      operationId: lock.deleteLock
+      operationId: lock.deleteLock_v1
       parameters:
         - name: lockID
           in: path
@@ -178,7 +181,7 @@ paths:
         - Admin Lock
       summary: Get Lock
       description: Returns a given lock from ID
-      operationId: lock.getLock
+      operationId: lock.getLock_v1
       parameters:
         - name: lockID
           in: path
@@ -195,13 +198,13 @@ paths:
         "200":
           description: Successful operation
 
-  /lock-version/{id}:
+  /v1/admin/lock/{id}/version:
     get:
       tags:
         - Admin Versioning
       summary: Get lock version
       description: Returns the version of given lock
-      operationId: versioning.requestLockVersion
+      operationId: versioning.requestLockVersion_v1
       parameters:
         - name: lockID
           in: path
@@ -244,13 +247,13 @@ paths:
                     family_name: { type: string },
                   },
               }
-  /lorauplink:
+  /v1/lorauplink:
     post:
       tags:
         - LoRa Lock_Telemetry
       summary:
         - Create uplink data
-      operationId: /lora/lock_telemetry.lorauplink
+      operationId: /lora/lock_telemetry.lorauplink_v1
       responses:
         "500":
           description: Could not identify lock
@@ -296,14 +299,13 @@ paths:
                     gateway_name: { type: string },
                   },
               }
-# TODO: change path & name if necessary
-  /me:
+  /v1/profile:
     get:
       tags:
         - Client App_Users
       summary: GET user profile data from JWT
       description: Takes a JWT and returns a user's profile
-      operationId: /client/app_users.getProfileFromToken
+      operationId: /client/app_users.getProfile_v1
       responses:
         "200":
           description: Successful operation
@@ -318,14 +320,14 @@ paths:
                 required: ["JSON web token"],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
-# TODO: change path & name if necessary
-  /mylocks:
+
+  /v1/locks/owned:
     get:
       tags:
         - Client Lock_Roles
       summary: GET all locks for given user
       description: Returns all locks associated with user
-      operationId: /client/lock_roles.getLocksFromToken
+      operationId: /client/lock_roles.ownedLocks_v1
       responses:
         "200":
           description: Successful operation
@@ -343,13 +345,13 @@ paths:
                 required: [JSON web token],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
-  /lock-sharing/{id}:
+  /v1/locks/{id}/shared-users:
     get:
       tags:
         - Client Lock_Roles
       summary: GET all shared users
       description: Returns list of users that a sharing a given lock
-      operationId: /client/lock_roles.getUsersSharing
+      operationId: /client/lock_roles.getUsersSharing_v1
       responses:
         "200":
           description: Successful operation
@@ -371,7 +373,7 @@ paths:
         - Client Lock_Roles
       summary: Add a shared client to lock
       description: Shares a lock with a given user
-      operationId: /client/lock_roles/addSharedUser
+      operationId: /client/lock_roles/addSharedUser_v1
       responses:
         "400":
           description: Error with provided information (lock ID, email, adding yourself)
@@ -397,7 +399,7 @@ paths:
         - Client Lock_Roles
       summary: Deletes shared user from lock
       description: Unshares a lock with a given user
-      operationId: /client/lock_roles/removeSharedUser
+      operationId: /client/lock_roles/removeSharedUser_v1
       responses:
         "400":
           description: Error with provided information (lock ID, email)
@@ -418,13 +420,13 @@ paths:
                 required: [User email],
                 properties: { User email: { type: string, format: email } },
               }
-  /lock-sharing/{id}/me:
+  /v1/locks/shared/{id}:
     delete:
       tags:
         - Client Lock_Roles
       summary: Remove self from shared lock
       description: Removes the user invoking action from a lock they are a shared user on
-      operationId: /client/lock_roles/removeSharedLock
+      operationId: /client/lock_roles/deleteSharedLock_v1
       parameters:
         - name: lockID
           in: path
@@ -441,13 +443,13 @@ paths:
         "500":
           description: Error completing process
 
-  /sharedlocks:
+  /v1/locks/shared:
     get:
       tags:
         - Client Lock_Roles
       summary: GET shared locks from given JWT
       description: Gets all shared locks for given user
-      operationId: /client/lock_roles.getSharedLocksFromToken
+      operationId: /client/lock_roles.sharedLocks_v1
       responses:
         "200":
           description: Successful operation
@@ -465,13 +467,13 @@ paths:
                 required: [JSON web token],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
-  /mylocks/{id}:
+  /v1/locks/{id}:
     get:
       tags:
         - Client Lock_Roles
       summary: GET a given user's registered lock
       description: Gets a specific registered lock for a user
-      operationId: /client/lock_roles.getLock
+      operationId: /client/lock_roles.getLock_v1
       responses:
         "200":
           description: Successful operation
@@ -493,7 +495,7 @@ paths:
         - Client Lock_Roles
       summary: Change name of lock
       description: Changes the name of the lock for the single user only
-      operationId: /client/lock_roles.changeLockName
+      operationId: /client/lock_roles.changeLockName_v1
       responses:
         "400":
           description: Invalid lock ID
@@ -517,13 +519,13 @@ paths:
                 required: [name],
                 properties: { name: { type: string } }
               }
-  /register/{reg_id}:
+  /v1/locks/register/{reg_id}:
     post:
       tags:
         - Client Lock_Roles
       summary: POST lock to User
       description: Registers lock to given user
-      operationId: /client/lock_roles.registerLock
+      operationId: /client/lock_roles.registerLock_v1
       responses:
         "201":
           description: Successful operation
@@ -549,14 +551,12 @@ paths:
                 required: [Lock Name],
                 properties: { Lock Name: { type: string } },
               }
-
-  /unregister/{id}:
     delete:
       tags:
         - Client Lock_Roles
       summary: DELETE lock from User
       description: Deletes (unregisters) lock from given user
-      operationId: /client/lock_roles.unregisterLock
+      operationId: /client/lock_roles.deregisterLock_v1
       responses:
         "200":
           description: Successful operation
@@ -580,13 +580,13 @@ paths:
                 required: [JSON web token],
                 properties: { JSON web token: { type: string, format: uuid } },
               }
-  /locktelemetry/{id}:
+  /v1/locks/{id}/telemetry:
     get:
       tags:
         - Client Lock_Telemetry
       summary: GET lock telemetry for user
       description: Fetches lock telemetry data for a specific lock
-      operationId: /client/lock_telemetry.getLockTelemetry
+      operationId: /client/lock_telemetry.getLockTelemetry_v1
       responses:
         "200":
           description: Successful operation
@@ -603,13 +603,13 @@ paths:
             type: string
         - $ref: '#/parameters/limitParam'
         - $ref: '#/parameters/pageParam'
-  /locklogs/{id}:
+  /v1/locks/{id}/connectivity-logs:
     get:
       tags:
         - Client Lock_Usage_Record
       summary: GET logs of given lock
       description: Fetches logs of a given lock
-      operationId: /client/lock_usage_record.getLockLogs
+      operationId: /client/lock_usage_record.getLockLogs_v1
       responses:
         "200":
           description: Successful operation
@@ -626,13 +626,13 @@ paths:
             type: string
         - $ref: '#/parameters/limitParam'
         - $ref: '#/parameters/pageParam'
-  /unlock/{id}:
+  /v1/locks/{id}/unlock:
     post:
       tags:
         - Client Lock_Usage_Record
       summary: POST unlock message to be queued in AWS and LoRaWAN
       description: Sends unlock message to lock through either AWS or LoRaWAN
-      operationId: /client/lock_usage_record.unlockLock
+      operationId: /client/lock_usage_record.unlockLock_v1
       responses:
         "201":
           description: Successful operation
@@ -649,6 +649,59 @@ paths:
           required: true
           schema:
             type: string
+  /v1/orders/amazon:
+    get:
+      tags:
+        - Integration Amazon
+      summary: Logs in to amazon account and scrapes page
+      description: Returns list of user's amazon orders
+      operationId: api/scraping/amazon_scrape.getAmazonOrders_v1
+      responses:
+        "500":
+          description: Login credentials do not exist
+        "200":
+          description: Orders returned successfully
+        "400":
+          description: Order page not found
+    post:
+      tags:
+        - Integration Amazon
+      summary: Logs in to amazon account and checks page
+      description: Adds a user's encrypted credentials to the DB for later use
+      operationId: api/scraping/store_login.storeAmazonLogin_v1
+      responses:
+        "400":
+          description: Error with username or password, possible duplicate information
+        "500":
+          description: Server/database error
+        "201":
+          description: Successfully stored amazon login
+    delete:
+      tags:
+        - Integration Amazon
+      summary: Removes Amazon login credentials from user's account
+      description: Deletes Amazon credentials linked to user's JWT from the database
+      operationId: api/scraping/store_login.removeAmazonLogin_v1
+      responses:
+        "200":
+          description: Successfully deleted amazon credentials
+        "500":
+          description: Server/database error deleting amazon login
+    put:
+      tags:
+        - Integration Amazon
+      summary: Logs in to amazon account to check credentials are correct, then updates DB
+      description: Updates registered amazon account to user's JWT
+      operationId: api/scraping/store_login.updateAmazonLogin_v1
+      responses:
+        "400":
+          description: Error with credentials passed
+        "201":
+          description: Successfully updated amazon credentials
+        "500":
+          description: Server/database error updating credentials
+        "404":
+          description: Amazon account with specified credentials does not exist
 
 x-webhooks:
   AWS Cognito Post Confirmation:
