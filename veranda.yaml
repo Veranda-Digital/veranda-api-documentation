@@ -663,6 +663,20 @@ paths:
           description: Orders returned successfully
         "400":
           description: Order page not found
+  /v1/orders/amazon/creds:
+    get:
+      tags:
+        - Integration Amazon
+      summary: Returns true if any amazon credentials registered to account
+      description: Fetches if an account has a registered amazon login
+      operationId: api/scraping/store_login.checkForAmazonCredentials_v1
+      responses:
+        "200":
+          description: Successfully find an amazon login in the database
+        "204":
+          description: Fails to find an amazon login registered to the account
+        "500":
+          description: Internal server error
     post:
       tags:
         - Integration Amazon
