@@ -64,6 +64,7 @@ tags:
     description: Dev endpoints for Users
     x-displayName: Users
   - name: LoRa Lock_Telemetry
+    description: LoRa Lock_Telemetry
 x-tagGroups:
   - name: Utilities
     tags:
@@ -85,6 +86,7 @@ x-tagGroups:
   - name: Integration
     tags:
       - Integration Amazon
+      - Amazon Offline
 
 parameters:
   limitParam:
@@ -653,7 +655,7 @@ paths:
     get:
       tags:
         - Integration Amazon
-      summary: Logs in to amazon account and scrapes page
+      summary: GETs amazon orders page
       description: Returns list of user's amazon orders
       operationId: api/scraping/amazon_scrape.getAmazonOrders_v1
       responses:
@@ -667,7 +669,7 @@ paths:
     get:
       tags:
         - Integration Amazon
-      summary: Returns true if any amazon credentials registered to account
+      summary: GETs if amazon login exists in DB
       description: Fetches if an account has a registered amazon login
       operationId: api/scraping/store_login.checkForAmazonCredentials_v1
       responses:
@@ -680,8 +682,8 @@ paths:
     post:
       tags:
         - Integration Amazon
-      summary: Logs in to amazon account and checks page
-      description: Adds a user's encrypted credentials to the DB for later use
+      summary: PUTs amazon login into DB
+      description: Tests login and adds a user's encrypted credentials to the DB for later use
       operationId: api/scraping/store_login.storeAmazonLogin_v1
       responses:
         "400":
@@ -693,7 +695,7 @@ paths:
     delete:
       tags:
         - Integration Amazon
-      summary: Removes Amazon login credentials from user's account
+      summary: DELETEs amazon login from DB
       description: Deletes Amazon credentials linked to user's JWT from the database
       operationId: api/scraping/store_login.removeAmazonLogin_v1
       responses:
@@ -704,8 +706,8 @@ paths:
     put:
       tags:
         - Integration Amazon
-      summary: Logs in to amazon account to check credentials are correct, then updates DB
-      description: Updates registered amazon account to user's JWT
+      summary: PUTs new amazon login into DB
+      description: Tests login for valid credentials, then updates registered amazon account to user's JWT
       operationId: api/scraping/store_login.updateAmazonLogin_v1
       responses:
         "400":
@@ -716,6 +718,52 @@ paths:
           description: Server/database error updating credentials
         "404":
           description: Amazon account with specified credentials does not exist
+
+  /v1/orders/amazon/offline:
+    get:
+      tags:
+        - Amazon Offline
+      summary:
+        - GETs amazon orders from DB
+      description: Fetches orders and products from the two DB tables
+      operationId: api/scraping/offline_orders.getAmazonOffline_v1
+      responses:
+      "200":
+        description: Successfully grabbed Amazon orders from DB
+      "500":
+        description: Server/database error getting orders
+    put:
+      tags:
+        - Amazon Offline
+      summary:
+        - PUTs new amazon orders into DB
+      description: Fetches new amazon orders not currently in DB
+      operationId: api/scraping/offline_orders.storeAmazonOffline_v1
+      responses:
+      "401":
+        description: Error logging into amazon orders page
+      "403":
+        description: Pending approval email or text to let scraper log in
+      "500":
+        description: Server/database error fetching new orders
+      "201":
+        description: Successfully updated DB with orders and products
+      "400":
+        description: Order page not found
+    delete:
+      tags:
+        - Amazon Offline
+      summary:
+        - DELETEs amazon orders from DB
+      description: Deletes all amazon orders from DB associated with user
+      operationId: api/scraping/offline_orders.deleteAmazonOffline_v1
+      responses:
+      "500":
+        description: Server/database error deleting orders
+      "200":
+        description: Successfully deleted amazon orders
+      "400":
+        description: No orders associated with user found 
 
 x-webhooks:
   AWS Cognito Post Confirmation:
