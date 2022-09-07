@@ -869,7 +869,7 @@ paths:
       summary: GET amazon orders from DB
       description: Gets all amazon orders connected to user's JWT and lock_id
       operationId: /scraping/amazon_offline.getAmazonOffline_v1
-      responeses:
+      responses:
         '200': 
           description: Successfully retrieved Amazon orders from DB
         '500':
@@ -887,7 +887,7 @@ paths:
       summary: DELETE amazon orders in table
       description: Deletes all amazon orders and products from JWT/lock_id combination
       operationId: /scraping/amazon_offline.deleteAmazonOffline_v1
-      responeses:
+      responses:
         '400':
           description: No Amazon orders associated with JWT/lock_id combination found
         '500':
