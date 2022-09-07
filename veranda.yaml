@@ -81,9 +81,11 @@ x-tagGroups:
   - name: Client
     tags:
       - Client App_Users
+      - Client User_Settings
       - Client Lock_Roles
       - Client Lock_Telemetry
       - Client Lock_Usage_Record
+      - Client Lock
   - name: Dev
     tags:
       - Dev Lock_Roles
@@ -374,6 +376,91 @@ paths:
                 }
               }
             }
+  /v1/profile/settings/active-lock:
+    get:
+      tags:
+        - Client User_Settings
+      summary: GET user's active lock
+      description: Returns a user's active lock in the app
+      operationId: /client/user_settings.getActiveLock_v1
+      responses:
+        '200':
+          description: Successfully gets active lock
+        '404':
+          description: Could not find an active lock for the user
+        '500':
+          description: Server error
+    put:
+      tags:
+        - Client User_Settings
+      summary: PUT user's active lock
+      description: Updates a user's active lock in the app
+      operationId: /client/user_settings.updateActiveLock_v1
+      responses:
+        '400':
+          description: Missing active lock in body
+        '201':
+          description: Successfully updated active lock
+        '500':
+          description: Server error
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                active_lock
+              ],
+              properties: {
+                active_lock: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+  /v1/profile/settings/theme:
+    get:
+      tags:
+        - Client User_Settings
+      summary: GET user's current theme
+      description: Returns a user's theme in the app
+      operationId: /client/user_settings.getTheme_v1
+      responses:
+        '200':
+          description: Successfully gets theme
+        '404':
+          description: Could not find a theme for the user
+        '500':
+          description: Server error
+    put:
+      tags:
+        - Client User_Settings
+      summary: PUT user's theme
+      description: Updates a user's theme in the app
+      operationId: /client/user_settings.updateTheme_v1
+      responses:
+        '400':
+          description: Missing theme in body
+        '201':
+          description: Successfully updated theme
+        '500':
+          description: Server error
+      requestBody:
+        content:
+          application/json:
+            schema: {
+              type: object,
+              required: [
+                theme
+              ],
+              properties: {
+                theme: {
+                  type: string,
+                  format: uuid
+                }
+              }
+            }
+
   /v1/locks/owned:
     get:
       tags:
@@ -485,6 +572,27 @@ paths:
         - name: lock_id
           in: path
           description: Lock ID to change name of
+          required: true
+          schema:
+            type: string
+  /v1/locks/{lock_id}/version:
+    get:
+      tags:
+        - Client Lock
+      summary: GET lock's version
+      description: Gets the version of a given lock
+      operationId: /client/lock.getLockVersion_v1
+      responses:
+        '200':
+          description: Successfully retrieved lock's version
+        '404':
+          description: Could not find specified lock
+        '500':
+          description: Server error
+      parameters:
+        - name: lock_id
+          in: path
+          description: Lock ID to fetch for
           required: true
           schema:
             type: string
