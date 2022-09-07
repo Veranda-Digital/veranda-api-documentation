@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: 'http://getveranda.com'
+  - url: "http://getveranda.com"
 info:
   description: |
     This is an OpenAPI representation of the Veranda Digital app API.
@@ -18,16 +18,16 @@ info:
     temperatures of the food being delivered.
   version: "0.0.1"
   title: Veranda Digital App
-  termsOfService: 'http://app.getveranda.com/'
+  termsOfService: "http://app.getveranda.com/"
   contact:
     name: Patrick Houlding
     email: patrick.houlding@getveranda.com
   x-logo:
-    url: '/docs/img/illu_logo.png'
+    url: "/assets/veranda_logo.svg"
     altText: Veranda Digital Inc. logo
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
 tags:
   - name: Admin Lock
@@ -108,7 +108,7 @@ paths:
       description: Pings the server and returns "Pong!" on success
       operationId: ping
       responses:
-        '200':
+        "200":
           description: Successful Operation
   /test:
     get:
@@ -118,7 +118,7 @@ paths:
       description: Not entirely certain what this operation does
       operationId: test
       responses:
-        '200':
+        "200":
           description: Successful Operation
 
   /v1/admin/lock:
@@ -129,42 +129,32 @@ paths:
       description: Adds a lock to the database with admin privileges
       operationId: admin/lock.createLock_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error
-        '406':
+        "406":
           description: Invalid input
       security:
         - veranda_auth:
-          - 'tbd'
+            - "tbd"
       x-codeSamples:
-        - lang: 'PHP'
+        - lang: "PHP"
           source: |
             to be filled in
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                id,
-                platform_id,
-                platform
-              ],
-              properties: {
-                id: {
-                  type: number,
-                  format: int64
+            schema:
+              {
+                type: object,
+                required: [id, platform_id, platform],
+                properties:
+                  {
+                    id: { type: number, format: int64 },
+                    platform_id: { type: string, format: uuid },
+                    platform: { type: string },
                   },
-                  platform_id: {
-                    type: string,
-                    format: uuid
-                  },
-                  platform: {
-                    type: string
-                  }
-                }
               }
     get:
       deprecated: true
@@ -173,14 +163,14 @@ paths:
       summary: GET all locks
       operationId: /dev/lock.getAllLocks
       responses:
-        '404':
+        "404":
           description: Not found
   /v1/admin/lock/{lock_id}:
     delete:
       tags:
         - Admin Lock
       summary: Delete Lock
-      description: 'Deletes a specific lock'
+      description: "Deletes a specific lock"
       operationId: admin/lock.deleteLock_v1
       parameters:
         - name: lock_id
@@ -190,12 +180,12 @@ paths:
           schema:
             type: string
       responses:
-          '400':
-            description: Invalid lock ID, must include a device EUI
-          '500':
-            description: Lock ID not found, could not delete
-          '200':
-            description: Successful operation
+        "400":
+          description: Invalid lock ID, must include a device EUI
+        "500":
+          description: Lock ID not found, could not delete
+        "200":
+          description: Successful operation
     get:
       tags:
         - Admin Lock
@@ -209,11 +199,11 @@ paths:
           schema:
             type: string
       response:
-        '400':
+        "400":
           description: Invalid lock ID, must include a device EUI
-        '500':
+        "500":
           description: Could not identify lock
-        '200':
+        "200":
           description: Successful operation
   /v1/admin/lock/{lock_id}/version:
     get:
@@ -229,9 +219,9 @@ paths:
           schema:
             type: string
       response:
-        '500':
+        "500":
           description: Unable to retrieve version of lock
-        '200':
+        "200":
           description: Found lock's version
   /signup:
     post:
@@ -246,33 +236,18 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                Username,
-                Password,
-                ClientID,
-                name,
-                family_name
-              ],
-              properties: {
-                Username: {
-                  type: string,
-                  format: email
+            schema:
+              {
+                type: object,
+                required: [Username, Password, ClientID, name, family_name],
+                properties:
+                  {
+                    Username: { type: string, format: email },
+                    Password: { type: string },
+                    ClientID: { type: string },
+                    name: { type: string },
+                    family_name: { type: string },
                   },
-                  Password: {
-                    type: string
-                  },
-                  ClientID: {
-                    type: string
-                  },
-                  name: {
-                    type: string
-                  },
-                  family_name: {
-                    type: string
-                  }
-                }
               }
   /v1/lorauplink:
     post:
@@ -282,71 +257,48 @@ paths:
         - Create uplink data
       operationId: /lora/lock_telemetry.loraUplink_v1
       responses:
-        '500':
+        "500":
           description: Could not identify lock
-        '200':
+        "200":
           description: Successful operation
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                Device EUI,
-                lock_id,
-                logged_time,
-                frequency,
-                payload,
-                gateway,
-                rssi,
-                snr,
-                message,
-                state,
-                battery,
-                temperature
-              ],
-              optional: [
-                gateway_name
-              ],
-              properties: {
-                Device EUI: {
-                  type: string
-                },
-                lock_id: {
-                  type: number
-                },
-                logged_time: {
-                  type: string
-                },
-                frequency: {
-                  type: number
-                },
-                payload: {
-                  type: string
-                },
-                rssi: {
-                  type: number
-                },
-                snr: {
-                  type: number
-                },
-                message: {
-                  type: string
-                },
-                state: {
-                  type: string
-                },
-                battery: {
-                  type: number
-                },
-                temperature: {
-                  type: number
-                },
-                gateway_name: {
-                  type: string
-                }
+            schema:
+              {
+                type: object,
+                required:
+                  [
+                    Device EUI,
+                    lock_id,
+                    logged_time,
+                    frequency,
+                    payload,
+                    gateway,
+                    rssi,
+                    snr,
+                    message,
+                    state,
+                    battery,
+                    temperature,
+                  ],
+                optional: [gateway_name],
+                properties:
+                  {
+                    Device EUI: { type: string },
+                    lock_id: { type: number },
+                    logged_time: { type: string },
+                    frequency: { type: number },
+                    payload: { type: string },
+                    rssi: { type: number },
+                    snr: { type: number },
+                    message: { type: string },
+                    state: { type: string },
+                    battery: { type: number },
+                    temperature: { type: number },
+                    gateway_name: { type: string },
+                  },
               }
-            }
   /v1/profile:
     get:
       tags:
@@ -355,25 +307,19 @@ paths:
       description: Takes a JWT and returns a user's profile
       operationId: /client/app_users.getProfile_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Not found
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                "JSON web token"
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: ["JSON web token"],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /v1/locks/owned:
     get:
       tags:
@@ -382,25 +328,19 @@ paths:
       description: Returns all locks associated with user
       operationId: /client/lock_roles.ownedLocks_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Locks not found
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }  
   /v1/locks/shared:
     get:
       tags:
@@ -409,25 +349,19 @@ paths:
       description: Gets all shared locks for given user
       operationId: /client/lock_roles.sharedLocks_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: No locks found
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /v1/locks/shared/{lock_id}:
     delete:
       tags:
@@ -443,11 +377,11 @@ paths:
           schema:
             type: string
       responses:
-        '404':
+        "404":
           description: Unable to find lock user wishes to be deleted from
-        '200':
+        "200":
           description: Successfully removed self from lock
-        '500':
+        "500":
           description: Server error
   /v1/locks/{lock_id}:
     get:
@@ -457,9 +391,9 @@ paths:
       description: Gets the given lock as long as it is registered to the user
       operationId: /client/lock_roles.getLock_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: No locks found, either no lock id number or lacking permissions
       parameters:
         - name: lock_id
@@ -475,11 +409,11 @@ paths:
       description: Changes the name of the given lock
       operationId: /client/lock_roles.changeLockName_v1
       responses:
-        '400':
+        "400":
           description: Unable to find lock to change name
-        '201':
+        "201":
           description: Successfully changed lock's name
-        '500':
+        "500":
           description: Error on knex call
       parameters:
         - name: lock_id
@@ -496,9 +430,9 @@ paths:
       description: Registers lock to given user
       operationId: /client/lock_roles.registerLock_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Not found
       parameters:
         - name: reg_id
@@ -514,9 +448,9 @@ paths:
       description: Deregisters lock from given user
       operationId: /client/lock_roles.deregisterLock_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Could not delete lock
       parameters:
         - name: reg_id
@@ -528,18 +462,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /v1/locks/{lock_id}/shared-users:
     post:
       tags:
@@ -561,15 +489,15 @@ paths:
           schema:
             type: string
       responses:
-        '400':
+        "400":
           description: Missing necessary information to perform action
-        '403':
+        "403":
           description: User does not have correct permissions to share lock
-        '404':
+        "404":
           description: No user found with provided email
-        '201':
+        "201":
           description: Successfully added shared user to lock
-        '500':
+        "500":
           description: Server error
     delete:
       tags:
@@ -591,15 +519,15 @@ paths:
           schema:
             type: string
       responses:
-        '400':
+        "400":
           description: Missing necessary information to perform action
-        '403':
+        "403":
           description: User does not have the correct permissions to share lock
-        '404':
+        "404":
           description: No user found with provided email
-        '200':
+        "200":
           description: Successfully removed shared user from the lock
-        '500':
+        "500":
           description: Server error
     get:
       tags:
@@ -608,9 +536,9 @@ paths:
       description: Returns list of users that a sharing a given lock
       operationId: /client/lock_roles.getSharedUsers_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: No locks found
       parameters:
         - name: lock_id
@@ -628,9 +556,9 @@ paths:
       description: Fetches lock telemetry data for a specific lock
       operationId: /client/lock_telemetry.getLockTelemetry_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error fetching telemetry data
       parameters:
         - name: id
@@ -647,9 +575,9 @@ paths:
       description: Fetches logs of a given lock
       operationId: /client/lock_usage_record.getLockLogs_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error fetching logs of lock
       parameters:
         - name: id
@@ -661,18 +589,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
   /v1/locks/{id}/unlock:
     post:
       tags:
@@ -681,9 +603,9 @@ paths:
       description: Sends unlock message to lock through either AWS or LoRaWAN
       operationId: /client/lock_usage_record.unlockLock_v1
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Error unlocking lock
       parameters:
         - name: id
@@ -695,18 +617,12 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                JSON web token
-              ],
-              properties: {
-                JSON web token: {
-                  type: string,
-                  format: uuid
-                }
+            schema:
+              {
+                type: object,
+                required: [JSON web token],
+                properties: { JSON web token: { type: string, format: uuid } },
               }
-            }
 
   /v1/orders/amazon/{lock_id}:
     get:
@@ -725,11 +641,11 @@ paths:
       description: Returns if the user has registered their amazon login with our service
       operationId: /scraping/amazon_store_login.checkForAmazonCredentials_v1
       responses:
-        '200':
+        "200":
           description: Successfully found registered credentials
-        '204':
+        "204":
           description: Could not find registered amazon credentials
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -745,11 +661,11 @@ paths:
       description: Validates and stores user's amazon credentials in our DB
       operationId: /scraping/amazon_store_login.storeAmazonLogin_v1
       responses:
-        '400':
+        "400":
           description: Missing vital information to complete request
-        '201':
+        "201":
           description: Successfully registered Amazon credentials to the system
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -761,34 +677,26 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                username,
-                password,
-                date
-              ],
-              properties: {
-                username: {
-                  type: string
-                },
-                password: {
-                  type: string
-                },
-                date: {
-                  type: string
-                }
+            schema:
+              {
+                type: object,
+                required: [username, password, date],
+                properties:
+                  {
+                    username: { type: string },
+                    password: { type: string },
+                    date: { type: string },
+                  },
               }
-            }  
     delete:
       tags:
         - Integration Amazon
       summary: DELETE Amazon credentials
       operationId: /scraping/amazon_store_login.removeAmazonLogin_v1
       responses:
-        '200':
+        "200":
           description: Successfully removed amazon credentials
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -804,13 +712,13 @@ paths:
       description: Update existing amazon credentials
       operationId: /scraping/amazon_store_login.updateAmazonLogin_v1
       responses:
-        '400':
+        "400":
           description: Missing vital information to complete request
-        '201':
+        "201":
           description: Successfully updated Amazon credentials
-        '500':
+        "500":
           description: Server error
-        '404':
+        "404":
           description: Could not find amazon credentials to update
       parameters:
         - name: lock_id
@@ -822,25 +730,17 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                username,
-                password,
-                date
-              ],
-              properties: {
-                username: {
-                  type: string
-                },
-                password: {
-                  type: string
-                },
-                date: {
-                  type: string
-                }
+            schema:
+              {
+                type: object,
+                required: [username, password, date],
+                properties:
+                  {
+                    username: { type: string },
+                    password: { type: string },
+                    date: { type: string },
+                  },
               }
-            }
 
   /v1/orders/amazon/offline/{lock_id}:
     put:
@@ -850,11 +750,11 @@ paths:
       description: Upserts new amazon orders and updates non-delivered items into offline table
       operationId: /scraping/amazon_offline.storeAmazonOffline_v1
       responses:
-        '500':
+        "500":
           description: Server error
-        '201':
+        "201":
           description: Successfully upserted order page
-        '400':
+        "400":
           description: Order page not found or no new orders
       parameters:
         - name: lock_id
@@ -870,9 +770,9 @@ paths:
       description: Gets all amazon orders connected to user's JWT and lock_id
       operationId: /scraping/amazon_offline.getAmazonOffline_v1
       responeses:
-        '200': 
+        "200":
           description: Successfully retrieved Amazon orders from DB
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -888,11 +788,11 @@ paths:
       description: Deletes all amazon orders and products from JWT/lock_id combination
       operationId: /scraping/amazon_offline.deleteAmazonOffline_v1
       responeses:
-        '400':
+        "400":
           description: No Amazon orders associated with JWT/lock_id combination found
-        '500':
+        "500":
           description: Server error
-        '200':
+        "200":
           description: Successfully deleted Amazon orders & products
       parameters:
         - name: lock_id
@@ -910,11 +810,11 @@ paths:
       description: Upserts new Instacart orders and updates non-delivered items into offline table
       operationId: /scraping/instacart_offline.storeInstacartOffline_v1
       responses:
-        '500':
+        "500":
           description: Server error
-        '201':
+        "201":
           description: Successfully upserted order page
-        '400':
+        "400":
           description: Order page not found or no new orders
       parameters:
         - name: lock_id
@@ -930,9 +830,9 @@ paths:
       description: Gets all Instacart orders connected to user's JWT and lock_id
       operationId: /scraping/instacart_offline.getInstacartOffline_v1
       responses:
-        '200': 
+        "200":
           description: Successfully retrieved Instacart orders from DB
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -948,11 +848,11 @@ paths:
       description: Deletes all Instacart orders and products from JWT/lock_id combination
       operationId: /scraping/instacart_offline.deleteInstacartOffline_v1
       responses:
-        '400':
+        "400":
           description: No Instacart orders associated with JWT/lock_id combination found
-        '500':
+        "500":
           description: Server error
-        '200':
+        "200":
           description: Successfully deleted Instacart orders & products
       parameters:
         - name: lock_id
@@ -970,11 +870,11 @@ paths:
       description: Returns if the user has registered their instacart login with our service
       operationId: /scraping/instacart_store_login.checkForInstacartCredentials_v1
       responses:
-        '200':
+        "200":
           description: Successfully found registered credentials
-        '204':
+        "204":
           description: Could not find registered amazon credentials
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -990,11 +890,11 @@ paths:
       description: Validates and stores user's Instacart credentials in our DB
       operationId: /scraping/instacart_store_login.storeInstacartLogin_v1
       responses:
-        '400':
+        "400":
           description: Missing vital information to complete request
-        '201':
+        "201":
           description: Successfully registered Instacart credentials to the system
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -1006,34 +906,26 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                username,
-                password,
-                date
-              ],
-              properties: {
-                username: {
-                  type: string
-                },
-                password: {
-                  type: string
-                },
-                date: {
-                  type: string
-                }
+            schema:
+              {
+                type: object,
+                required: [username, password, date],
+                properties:
+                  {
+                    username: { type: string },
+                    password: { type: string },
+                    date: { type: string },
+                  },
               }
-            }  
     delete:
       tags:
         - Integration Instacart
       summary: DELETE Instacart credentials
       operationId: /scraping/Instacart_store_login.removeInstacartLogin_v1
       responses:
-        '200':
+        "200":
           description: Successfully removed Instacart credentials
-        '500':
+        "500":
           description: Server error
       parameters:
         - name: lock_id
@@ -1049,13 +941,13 @@ paths:
       description: Update existing Instacart credentials
       operationId: /scraping/instacart_store_login.updateInstacartLogin_v1
       responses:
-        '400':
+        "400":
           description: Missing vital information to complete request
-        '201':
+        "201":
           description: Successfully updated Instacart credentials
-        '500':
+        "500":
           description: Server error
-        '404':
+        "404":
           description: Could not find Instacart credentials to update
       parameters:
         - name: lock_id
@@ -1067,25 +959,17 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: {
-              type: object,
-              required: [
-                username,
-                password,
-                date
-              ],
-              properties: {
-                username: {
-                  type: string
-                },
-                password: {
-                  type: string
-                },
-                date: {
-                  type: string
-                }
+            schema:
+              {
+                type: object,
+                required: [username, password, date],
+                properties:
+                  {
+                    username: { type: string },
+                    password: { type: string },
+                    date: { type: string },
+                  },
               }
-            }  
 
   /mirror:
     any:
@@ -1095,7 +979,7 @@ paths:
       description: Mirrors the called event body back as return object
       operationId: /dev/tools.mirror
       responses:
-        '200':
+        "200":
           description: Successful operation, Thanks Josh :)
       deprecated: true
   /lockReg/{device_eui}:
@@ -1106,9 +990,9 @@ paths:
       description: DEV Tool -> registers lock
       operationId: /dev/lock.addLockReg
       responses:
-        '200':
+        "200":
           description: Successful operation
-        '500':
+        "500":
           description: Not found
       parameters:
         - name: device_eui
@@ -1125,7 +1009,7 @@ paths:
       summary: CREATE user
       operationId: /dev/users.createAppUser
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
   /user/{id}:
@@ -1135,7 +1019,7 @@ paths:
       summary: GET user by ID
       operationId: /dev/users.getAppUserbyID
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
     put:
@@ -1144,7 +1028,7 @@ paths:
       summary: UPDATE user
       operationId: /dev/users.updateAppUser
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
     delete:
@@ -1153,7 +1037,7 @@ paths:
       summary: DELETE user
       operationId: /dev/users.deleteAppUser
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
   /lockrecord/{id}:
@@ -1163,7 +1047,7 @@ paths:
       summary: GET lock_usage_record
       operationId: /dev/lock_usage_record.getLockUsageRecord
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
   /lockrole/{id}:
@@ -1173,7 +1057,7 @@ paths:
       summary: GET Lock_Roles from ID
       operationId: /dev/lock_roles.getLockRole
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
   /lockrole:
@@ -1183,7 +1067,7 @@ paths:
       summary: POST Lock_Role
       operationId: /dev/lock_roles.createLockRole
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
     delete:
@@ -1192,52 +1076,36 @@ paths:
       summary: DELETE Lock_Role
       operationId: /dev/lock_roles.deleteLockRole
       responses:
-        '404':
+        "404":
           description: Not found
       deprecated: true
 
 x-webhooks:
-    AWS Cognito Post Confirmation:
-      post:
-        tags:
-          - Admin Cognito
-        summary: Post Confirmation
-        description: Duplicates successful user signup into PostGres database after AWS Cognito Signup
-        operationId: cognito.postConfirmation
-        responses:
-          default:
-            description: Successful operation
-          '500':
-            description: Failure
-        requestBody:
-          content:
-            application/json:
-              schema: {
+  AWS Cognito Post Confirmation:
+    post:
+      tags:
+        - Admin Cognito
+      summary: Post Confirmation
+      description: Duplicates successful user signup into PostGres database after AWS Cognito Signup
+      operationId: cognito.postConfirmation
+      responses:
+        default:
+          description: Successful operation
+        "500":
+          description: Failure
+      requestBody:
+        content:
+          application/json:
+            schema:
+              {
                 type": object,
-                required: [
-                  id,
-                  email,
-                  first_name,
-                  last_name,
-                  role
-                ],
-                properties: {
-                  id: {
-                    type: string
-                    },
-                    email: {
-                      type: string,
-                      format: email
-                    },
-                    first_name: {
-                      type: string
-                    },
-                    last_name: {
-                      type: string
-                    },
-                    role: {
-                      type: string,
-                      value: user
-                    }
-                  }
-                }
+                required: [id, email, first_name, last_name, role],
+                properties:
+                  {
+                    id: { type: string },
+                    email: { type: string, format: email },
+                    first_name: { type: string },
+                    last_name: { type: string },
+                    role: { type: string, value: user },
+                  },
+              }
