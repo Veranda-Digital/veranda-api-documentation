@@ -23,7 +23,7 @@ info:
     name: Patrick Houlding
     email: patrick.houlding@getveranda.com
   x-logo:
-    url: '/docs/img/illu_logo.png'
+    url: "/assets/veranda_logo.svg"
     altText: Veranda Digital Inc. logo
   license:
     name: Apache 2.0
