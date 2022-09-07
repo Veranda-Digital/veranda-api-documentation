@@ -37,6 +37,12 @@ tags:
   - name: Client App_Users
     description: App_Users endpoints for Clients
     x-displayName: Users
+  - name: Client User_Settings
+    descrption: User_Settings endpoints for clients
+    x-displayName: User Settings
+  - name: Client Lock
+    description: Lock endpoints for clients
+    x-displayName: Lock
   - name: Client Lock_Roles
     description: Client endpoints for Lock_Roles
     x-displayName: Lock
