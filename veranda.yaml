@@ -92,6 +92,7 @@ x-tagGroups:
       - Client Lock_Telemetry
       - Client Lock_Usage_Record
       - Client Lock
+      - Client Notifications
   - name: Dev
     tags:
       - Dev Lock_Roles
@@ -106,6 +107,7 @@ x-tagGroups:
     tags:
       - Integration Amazon
       - Integration Instacart
+      - Integration All
 
 paths:
   /:
@@ -467,6 +469,52 @@ paths:
               }
             }
 
+  /v1/profile/notifications:
+    get:
+      tags:
+        - Client Notifications
+      summary: GET user's notifications
+      description: Returns a list of all user's notifications
+      operationId: /notifications/notifications.getNotifications_v1
+      responses:
+        '400':
+          description: Archived flag must be true or false
+        '200':
+          description: Successfully found notifications
+        '500':
+          description: Server error
+      parameters:
+          - in: query
+            name: archived
+            schema:
+              type: boolean
+            description: true or false whether the client wants to see archived or unarchived. Not required
+  /v1/profile/notifications/{id}/archive:
+    put:
+      tags:
+        - Client Notifications
+      summary: PUT notification archived
+      description: Marks a speficied notification as archived or not
+      operationId: /notifications/notifications.markNotificationArchived_v1
+      responses:
+        '400':
+          description: toArchive must be true or false
+        '200':
+          description: Successfully changed boolean value of notification
+        '500':
+          description: Server error
+      parameters:
+          - in: path
+            name: id
+            schema:
+              type: integer
+            description: ID of the notification to mark as archived or not
+          - in: query
+            name: toArchive
+            schema:
+              type: boolean
+            description: true or false to update the notification to
+
   /v1/locks/owned:
     get:
       tags:
@@ -602,6 +650,28 @@ paths:
           required: true
           schema:
             type: string
+  /v1/locks/{id}/filled:
+    get:
+      tags: Client Lock
+      summary: GET order inside
+      description: Checks if a lock box has an order inside
+      operationId: /client/lock.getOrderIsInBox_v1
+      #responses
+      responses:
+        '400':
+          description: Lock ID not found
+        '200':
+          description: Successfully found lock, returns true/false depending on database return
+        '500':
+          description: Server error
+      parameters:
+          - name: id
+            in: path
+            description: Lock ID to fetch for
+            schema:
+              type: string
+            
+
   /v1/locks/register/{reg_id}:
     post:
       tags:
@@ -1201,6 +1271,91 @@ paths:
               }
             }  
 
+  /v1/orders/{lock_id}:
+    get:
+      tags:
+        - Integration All
+      summary: GET all integration orders
+      description: Gets all orders tied to a user's account and lock_id
+      operationId: /scraping/all_integrations.getAllStoredIntegrationOrders_v1
+      responses:
+        '400':
+          description: Error with query parameters
+        '200':
+          description: Query success, either contains orders associated with query or is empty
+        '500':
+          description: Server error
+      parameters:
+          - name: lock_id
+            in: path
+            description: ID of lock to get associated orders of
+            required: true
+            schema:
+              type: string
+          - name: integration
+            in: query
+            description: Either amazon or instacart as values
+            required: false
+            schema:
+              type: string
+          - name: page
+            in: query
+            description: Page of the request to get
+            required: false
+            schema:
+              type: integer
+          - name: limit
+            in: query
+            description: Number of orders to display per page
+            required: false
+            schema:
+              type: integer
+          - name: delivered
+            in: query
+            description: Boolean to filter delivered/undelivered orders
+            required: false
+            schema:
+              type: boolean
+          - name: date
+            in: query
+            description: Furthest date to display in the query (YYYY-MM-DD)
+            required: false
+            schema:
+              type: string
+          - name: retrieved
+            in: query
+            description: Boolean to filter retrieved/unretrieved orders
+            required: false
+            schema:
+              type: boolean
+      #params
+  /v1/orders/{lock_id}/{order_number}:
+    get:
+      tags:
+        - Integration All
+      summary: GET specific order
+      description: Gets information about singular order
+      operationId: /scraping/all_integrations.getSpecificOrder_v1
+      responses:
+        '200':
+          description: Successfully queried for order
+        '500':
+          description: Server error
+      parameters:
+        - name: lock_id
+          in: path
+          description: ID of lock_id to query for
+          required: true
+          schema:
+            type: string
+        - name: order_number
+          in: path
+          description: Order number to query for
+          required: true
+          schema:
+            type: string
+
+## DEV/DEPRECATED ZONE
   /mirror:
     any:
       tags:
