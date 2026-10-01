@@ -20,7 +20,8 @@ Legacy OpenAPI 3.0 spec (historical only): [`archive/openapi-legacy.yaml`](archi
 ## Change workflow
 
 1. Open a pull request **here** first (spec + contract markdown + `CHANGELOG.md`).
-2. Merge, then tag `contract-vX.Y.Z` on this repo.
-3. Bump the `contract/` submodule pointer in **VerandaApp** and/or **veranda-serverless-backend** to that tag.
+2. **Bump `info.version`** in `openapi.yaml` when the contract release should get a new tag (semver `X.Y.Z`).
+3. Merge to `master`. CI tags `contract-vX.Y.Z` automatically (see [`docs/contract-release-automation.md`](docs/contract-release-automation.md)).
+4. Merge the automated bump PRs in app repos (when `CONTRACT_CONSUMER_BUMP_TOKEN` is configured), or bump `contract/` manually to that tag.
 
 Do not change API behavior in app repos without updating this contract in the same release train.
