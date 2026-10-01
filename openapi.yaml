@@ -1,0 +1,83 @@
+openapi: 3.1.0
+info:
+  title: Veranda API
+  version: 0.1.0
+  description: |
+    Canonical HTTP API for Veranda mobile clients and the serverless backend.
+
+    Paths are added in waves; track progress in `docs/endpoint-inventory.md` and `CHANGELOG.md`.
+
+    Historical spec (not maintained): `archive/openapi-legacy.yaml`.
+  contact:
+    name: Veranda Digital
+    url: https://app.getveranda.com
+servers:
+  - url: https://api.getveranda.com
+    description: Production API (stage-specific URLs may differ)
+security:
+  - bearerAuth: []
+paths: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Amazon Cognito user pool access token
+  schemas:
+    Envelope:
+      type: object
+      required:
+        - data
+        - metadata
+      properties:
+        data:
+          description: Operation-specific payload
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Pagination and operation metadata
+    PaginationMetadata:
+      type: object
+      properties:
+        pagination:
+          type: boolean
+        currentPage:
+          type: integer
+          minimum: 1
+        perPage:
+          type: integer
+          minimum: 1
+        total:
+          type: integer
+          minimum: 0
+        totalPages:
+          type: integer
+          minimum: 0
+  parameters:
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+    from:
+      name: from
+      in: query
+      description: Range start (ISO-8601), where supported
+      schema:
+        type: string
+        format: date-time
+    to:
+      name: to
+      in: query
+      description: Range end (ISO-8601), where supported
+      schema:
+        type: string
+        format: date-time
